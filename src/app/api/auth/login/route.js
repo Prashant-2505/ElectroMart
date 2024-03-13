@@ -68,7 +68,7 @@ export async function POST(req) {
             token:token,
         });
     } catch (error) {
-        console.error("Error while logging in. Please try again.", error);
+        console.log(`Error while logging in. Please try again. ${ error}`);
 
         return NextResponse.json({
             success: false,
