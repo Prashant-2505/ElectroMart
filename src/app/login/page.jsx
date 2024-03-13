@@ -135,9 +135,9 @@ const Page = () => {
 
                                     {loading ? <Spinner color='warning' /> : 'Login'}
                                 </Button>
-                                <button onClick={handleForgetPassword} className=' text-red-400 hover:text-red-500 duration-200 ease-out mt-4 cursor-pointer border-b-2 border-transparent hover:border-b-2 hover:border-red-400'>
+                                {/* <button onClick={handleForgetPassword} className=' text-red-400 hover:text-red-500 duration-200 ease-out mt-4 cursor-pointer border-b-2 border-transparent hover:border-b-2 hover:border-red-400'>
                 Forget password ?
-            </button>
+            </button> */}
 
                             </form>
                         </CardBody>
