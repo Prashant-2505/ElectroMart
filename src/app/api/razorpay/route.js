@@ -5,9 +5,10 @@ import Payment from "@/models/payment";
 import connectToDb from "@/database/index";
 
 const instance = new Razorpay({
-    key_id: process.env.RAZORPAY_API_KEY,
+    key_id: process.env.RAZORPAY_API_KEY || "temp_id",
     key_secret: process.env.RAZORPAY_APT_SECRET,
 });
+console.log(process.env.RAZORPAY_API_KEY)
 
 //
 export async function POST(req) {
