@@ -51,9 +51,9 @@ export async function POST(req) {
             }
         });
 
-        // Email content
+        // Email content 
         const mailOptions = {
-            from: 'your_email@gmail.com',
+            from: process.env.MAIL ,
             to: existUser.email,
             subject: 'Password Reset for Your Account',
             html: `
