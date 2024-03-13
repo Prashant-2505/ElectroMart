@@ -37,9 +37,10 @@ export async function POST(req) {
             owner: existUser._id,
             token: generatedToken
         });
+ 
+        console.log("p")
 
-
-        const resetUrl = `http://localhost:3000/reset-password?token=${generatedToken}&id=${existUser._id}`;
+        const resetUrl = `https://electro-mart.vercel.app//reset-password?token=${generatedToken}&id=${existUser._id}`;
 
         // Create a Nodemailer transport
         const transporter = nodemailer.createTransport({
@@ -74,7 +75,7 @@ export async function POST(req) {
     } catch (error) {
         console.error("Error in POST request:", error);
         return NextResponse.json({
-            message: "Internal Server Error"
+            message: `Internal Server Error + ${error.message}`
         }, { status: 500 });
     }
 }
