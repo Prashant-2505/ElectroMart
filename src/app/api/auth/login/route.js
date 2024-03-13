@@ -8,6 +8,7 @@ import { cookies } from 'next/headers'
 export const dynamic = "force-dynamic";
 
 export async function POST(req) {
+    console.log(process.env.JWT_SECERET)
     await connectToDb();
 
     const { email, password } = await req.json();
