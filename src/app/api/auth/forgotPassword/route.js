@@ -7,7 +7,7 @@ import connectToDb from "@/database";
 
 export async function POST(req) {
     try {
-        connectToDb()
+        connectToDb();
         const { email } = await req.json();
 
         if (!email) {
@@ -33,14 +33,12 @@ export async function POST(req) {
         const generatedToken = crypto.randomBytes(30).toString('hex');
 
         // Save the generated token to the database
-        const resetToken = await ResetToken.create({
+        await ResetToken.create({
             owner: existUser._id,
             token: generatedToken
         });
- 
-        console.log("p")
 
-        const resetUrl = `https://electro-mart.vercel.app//reset-password?token=${generatedToken}&id=${existUser._id}`;
+        const resetUrl = `https://electro-mart.vercel.app/reset-password?token=${generatedToken}&id=${existUser._id}`;
 
         // Create a Nodemailer transport
         const transporter = nodemailer.createTransport({
@@ -52,9 +50,9 @@ export async function POST(req) {
             }
         });
 
-        // Email content 
+        // Email content
         const mailOptions = {
-            from: process.env.MAIL ,
+            from: process.env.MAIL,
             to: existUser.email,
             subject: 'Password Reset for Your Account',
             html: `
@@ -68,14 +66,14 @@ export async function POST(req) {
         await transporter.sendMail(mailOptions);
 
         return NextResponse.json({
-            success:true,
-            message: "Password reset link sent to mail"
+            success: true,
+            message: "Password reset link sent to email"
         });
 
     } catch (error) {
         console.error("Error in POST request:", error);
         return NextResponse.json({
-            message: `Internal Server Error + ${error.message}`
+            message: `Internal Server Error: ${error.message}`
         }, { status: 500 });
     }
 }
