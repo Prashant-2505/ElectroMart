@@ -1,6 +1,6 @@
 import connectToDb from '@/database/index';
 import User from '@/models/user';
-import { hash } from 'bcryptjs';
+import { hash, hashSync } from 'bcryptjs';
 import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
@@ -24,8 +24,7 @@ export async function POST(req) {
             })
         }
 
-        const hashedPassword = await hash(password, 10)
-
+        const hashedPassword = await hashSync(password, 10);
         const newUser = await User.create({
             name, email, password: hashedPassword,
         })

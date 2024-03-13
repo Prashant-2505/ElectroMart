@@ -6,6 +6,7 @@ import { login } from '@/services/auth/logIn';
 import { useAuth } from '@/context/authContext';
 import { useCart } from '@/context/cartContext';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 
 const Page = () => {
@@ -73,6 +74,36 @@ const Page = () => {
         }
     };
 
+    const handleForgetPassword = async (e) => {
+        e.preventDefault()
+        try {
+            if(!loginFormData.email) 
+            {
+                alert("please enter you email address")
+                return
+            }
+            const {data} = await axios.post('/api/auth/forgotPassword', {email:loginFormData.email}, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if(data.success)
+            {
+                alert(data.message)
+            }
+            else
+            {
+                alert(data.message)
+
+            }
+    
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    }
+
+
     return (
         <div className="flex w-full flex-col justify-center items-center mt-[7rem] ">
             <Tabs aria-label="Options" className="">
@@ -104,6 +135,10 @@ const Page = () => {
 
                                     {loading ? <Spinner color='warning' /> : 'Login'}
                                 </Button>
+                                <button onClick={handleForgetPassword} className=' text-red-400 hover:text-red-500 duration-200 ease-out mt-4 cursor-pointer border-b-2 border-transparent hover:border-b-2 hover:border-red-400'>
+                Forget password ?
+            </button>
+
                             </form>
                         </CardBody>
                     </Card>
@@ -147,6 +182,7 @@ const Page = () => {
                     </Card>
                 </Tab>
             </Tabs>
+           
         </div>
     );
 };
