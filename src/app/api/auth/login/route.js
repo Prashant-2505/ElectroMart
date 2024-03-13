@@ -43,7 +43,7 @@ export async function POST(req) {
                 email: existingUser.email,
                 role: existingUser.role,
             },
-            process.env.JWT_SECERET,
+            process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
