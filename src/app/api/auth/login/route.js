@@ -2,38 +2,39 @@ import connectToDb from '@/database/index';
 import User from '@/models/user';
 import { compareSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers'
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req) {
-    console.log(process.env.JWT_SECRET); // Corrected typo in environment variable name
-
+    console.log(process.env.JWT_SECERET)
     await connectToDb();
 
     const { email, password } = await req.json();
-
+   
     if (!email || !password) {
-        return {
-            status: 400,
-            body: { success: false, message: "Please fill all required fields" }
-        };
+        return NextResponse.json({
+            success: false,
+            message: "Please fill all required fields",
+        });
     }
 
     try {
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
-            return {
-                status: 401,
-                body: { success: false, message: "User does not exist. Please sign in" }
-            };
+            return NextResponse.json({
+                success: false,
+                message: "User does not exist. Please sign in",
+            });
         }
 
         const checkPassword = await compareSync(password, existingUser.password);
         if (!checkPassword) {
-            return {
-                status: 401,
-                body: { success: false, message: "Wrong Password or Email. Please use valid details." }
-            };
+            return NextResponse.json({
+                success: false,
+                message: "Wrong Password or Email. Please use valid details.",
+            });
         }
 
         const token = jwt.sign(
@@ -42,34 +43,37 @@ export async function POST(req) {
                 email: existingUser.email,
                 role: existingUser.role,
             },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECERET,
             { expiresIn: '1d' }
         );
 
-        // Set cookie directly through response object
-        req.res.setHeader('Set-Cookie', `access_token=${token}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24 * 7}`);
+        cookies().set({
+            name: 'access_token',
+            value: token,
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 7,
+            path:'/'
+        })
 
-        return {
-            status: 200,
-            body: {
-                success: true,
-                message: "Login successful",
-                user: {
-                    email: existingUser.email,
-                    name: existingUser.name,
-                    id: existingUser._id,
-                    role: existingUser.role,
-                    address: existingUser.address,
-                },
-                token: token,
-            }
-        };
+
+        return NextResponse.json({
+            success: true,
+            message: "Login successful",
+            user: {
+                email: existingUser.email,
+                name: existingUser.name,
+                id: existingUser._id,
+                role: existingUser.role,
+                address: existingUser.address,
+            },
+            token:token,
+        });
     } catch (error) {
-        console.error("Error while logging in:", error); // Log error object for better debugging
+        console.log(`Error while logging in. Please try again. ${ error}`);
 
-        return {
-            status: 500,
-            body: { success: false, message: `Something went wrong! Please try again later. ${error.message}` }
-        };
+        return NextResponse.json({
+            success: false,
+            message: `Something went wrong! Please try again later. ${error}`,
+        });
     }
 }
