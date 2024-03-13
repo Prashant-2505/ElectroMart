@@ -72,7 +72,7 @@ export async function POST(req) {
 
         return NextResponse.json({
             success: false,
-            message: "Something went wrong! Please try again later.",
+            message: `Something went wrong! Please try again later. ${error}`,
         });
     }
 }
