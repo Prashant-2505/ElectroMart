@@ -11,7 +11,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-     
+
     },
     screens: {
       '2xl': { 'max': '1535px' },
@@ -33,5 +33,15 @@ module.exports = {
       // => @media (max-width: 639px) { ... }
     }
   },
-  plugins: [nextui()],
+  plugins: [nextui(), function ({ addUtilities }) {
+    addUtilities({
+      '.hide-scrollbar': {
+        /* Hide scrollbars in WebKit-based browsers */
+        '::-webkit-scrollbar': { display: 'none' },
+        /* Hide scrollbars in Firefox */
+        '-ms-overflow-style': 'none', /* IE and Edge */
+        'scrollbar-width': 'none', /* Firefox */
+      },
+    })
+  },],
 }

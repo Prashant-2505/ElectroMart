@@ -107,7 +107,7 @@ const Index = () => {
 
 
   return (
-    <div className="fixed top-0 bg-black  w-full z-20 ">
+    <div className="fixed top-0 bg-black  w-full z-20 hide-scrollbar">
 
       <div className='h-[20%]  bg-white p-5 flex justify-between items-center '>
 
@@ -132,7 +132,7 @@ const Index = () => {
               Home
             </li>
             <li
-              onMouseEnter={show}
+              onClick={()=>setDropItem(!dropItem)}
               className={`${liStyle} flex justify-center items-center gap-1`}
             >
               Store

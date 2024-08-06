@@ -68,7 +68,6 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-
     getAllSubCategories()
   }, [parentCategory]);
 
