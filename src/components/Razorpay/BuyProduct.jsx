@@ -18,6 +18,9 @@ const BuyProduct = () => {
 
     const [userAdress, setUserAdress] = useState({})
 
+    const [isLoading, setIsLoading] = useState(false);
+
+
 
     const [auth, setAuth] = useAuth()
     const [cart, setCart] = useCart()
@@ -29,18 +32,22 @@ const BuyProduct = () => {
             if (data.success) {
                 setAuth({ ...auth, user: { ...auth.user, address: userAdress } }); // Update the address in the authentication context
                 console.log(auth);
+                setIsLoading(false)
                 alert('Address updated successfully');
             }
         } catch (error) {
             console.log(error)
+            setIsLoading(false)
         }
     }
 
 
     const makePayment = async ({ productId = null }) => {
         // "use server"
+        setIsLoading(true)
         if (auth.user === null || auth === null) {
             alert("please login to continue")
+            setIsLoading(false)
             return
         }
         else {
@@ -61,45 +68,45 @@ const BuyProduct = () => {
             amount: order.amount,
             order_id: order.id,
             description: "Understanding RazorPay Integration",
-            // handler: async function (response) {
-            //     const { data } = await productPaymentVerify({
-            //         razorpay_payment_id: response.razorpay_payment_id,
-            //         razorpay_order_id: response.razorpay_order_id,
-            //         razorpay_signature: response.razorpay_signature,
-            //     })
+            handler: async function (response) {
+                // const { data } = await productPaymentVerify({
+                //     razorpay_payment_id: response.razorpay_payment_id,
+                //     razorpay_order_id: response.razorpay_order_id,
+                //     razorpay_signature: response.razorpay_signature,
+                // })
 
 
-            //     // const data = await fetch("http://localhost:3000/api/paymentverify", {
-            //     //     method: "POST",
-            //     //     // headers: {
-            //     //     //   // Authorization: 'YOUR_AUTH_HERE'
-            //     //     // },
-            //     //     body: JSON.stringify({
-            //     //         razorpay_payment_id: response.razorpay_payment_id,
-            //     //         razorpay_order_id: response.razorpay_order_id,
-            //     //         razorpay_signature: response.razorpay_signature,
-            //     //     }),
-            //     // });
+                 const data = await fetch("http://localhost:3000/api/paymentverify", {
+                     method: "POST",
+                      headers: {
+                         Authorization: 'YOUR_AUTH_HERE'
+                      },
+                     body: JSON.stringify({
+                         razorpay_payment_id: response.razorpay_payment_id,
+                         razorpay_order_id: response.razorpay_order_id,
+                         razorpay_signature: response.razorpay_signature,
+                     }),
+                 });
 
 
 
-            //     const res = await data.json();
+                 const res = await data.json();
 
-            //     console.log("response verify==", res)
+                 console.log("response verify==", res)
 
-            //     if (res?.message == "success") {
+                 if (res?.message == "success") {
 
+                      setIsLoading(false)
+                     console.log("redirected.......")
+                     router.push("/paymentsuccess?paymentid=" + response.razorpay_payment_id)
 
-            //         console.log("redirected.......")
-            //         router.push("/paymentsuccess?paymentid=" + response.razorpay_payment_id)
+                 }
 
-            //     }
-
-            //     // Validate payment at server - using webhooks is a better idea.
-            //     // alert(response.razorpay_payment_id);
-            //     // alert(response.razorpay_order_id);
-            //     // alert(response.razorpay_signature);
-            // },
+                //   Validate payment at server - using webhooks is a better idea.
+                  alert(response.razorpay_payment_id);
+                  alert(response.razorpay_order_id);
+                  alert(response.razorpay_signature);
+             },
             prefill: {
                 name: "ElectroMart",
                 email: "ElectroMart@gmail.com",
@@ -127,7 +134,7 @@ const BuyProduct = () => {
     return (
         <>
             <Suspense fallback={<Loading />}>
-                <Buy makePayment={makePayment} />
+                <Buy makePayment={makePayment} isLoading={isLoading} setIsLoading/>
             </Suspense>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} >

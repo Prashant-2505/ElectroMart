@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 
 
-const Buy = ({ makePayment}) => {
+const Buy = ({ makePayment,isLoading}) => {
 
-    const [isLoading, setIsLoading] = useState(false);
 
 
     const buttonClasses = `bg-black border-2 transition ease-in duration-200 text-white font-semibold py-2 px-4 rounded 
